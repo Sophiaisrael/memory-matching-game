@@ -4,20 +4,22 @@ CMPS-1100 Foundations of Programming Project
 Sophia Israel
 
 This is the starter file for my Memory Matching Game project.
-Core features planned:
-- Generate shuffled card pairs
-- Display board to the user
-- Allow card selection
-- Match checking logic
-- Reshuffle unmatched cards every 5 guesses
-- Scoring system
-- Optional hint feature
+Core features implemented:
+- Generates a shuffled 4x4 board
+- Cards start hidden
+- Player selects three cards each turn
+- Triple matching system
+- Attempt counter
+- Cards reveal before match check
+- Matched cards stay visible
 """
 
 
 
+
+
 # TODO:
-# Implement board setup
+# Implement board setupcd ~
 # Implement game loop
 # Implement matching logic
 # Implement reshuffle feature
@@ -26,7 +28,7 @@ Core features planned:
 import random
 
 def create_board():
-    values = [1,1,2,2,3,3,4,4,5,5,6,6,7,7,8,8]
+    values = values = [1,1,1,2,2,2,3,3,3,4,4,4,5,5,5,6]
     random.shuffle(values)
 
     board = []
@@ -47,7 +49,7 @@ def display_board(board):
         for card in row:
             value, status = card
             if status == "hidden":
-                print(str(value)+"*", end=" ")
+                print("*", end=" ")
             else:
                 print(value, end=" ")
         print()
@@ -70,12 +72,25 @@ def mark_matched(board, pos1, pos2):
 
     board[r1][c1] = (val1, "matched")
     board[r2][c2] = (val2, "matched")
+
+def all_matched(board):
+    for row in board:
+        for value, status in row:
+            if status != "matched":
+                return False
+    return True
+
 def main():
     print("Memory Matching Game")
     print("CMPS-1100 Foundations of Programming")
     print("Starter scaffold loaded successfully.")
     board = create_board()
     display_board(board)
+
+
+
+    guesses = 0
+
     while True:
         input_is_valid=False
         while not input_is_valid: 
@@ -87,23 +102,46 @@ def main():
             r2 = int(input("Row (0-3): "))
             c2 = int(input("Col (0-3): "))
 
+            print("\nPick third card:")
+            r3 = int(input("Row (0-3): "))
+            c3 = int(input("Col (0-3): "))
+
+            guesses += 1
+            print("\nAttempt #", guesses)
+
             if r1==r2 and c1==c2:
                 print("invalid input")
             else:
                 input_is_valid=True
 
 
+        board[r1][c1] = (board[r1][c1][0], "revealed")
+        board[r2][c2] = (board[r2][c2][0], "revealed")
+        board[r3][c3] = (board[r3][c3][0], "revealed")
 
+        display_board(board)    
              
-        if check_match(board, (r1, c1), (r2, c2)):
-            print("Match found!")
-            mark_matched(board, (r1, c1), (r2, c2))
+        val1, _ = board[r1][c1]
+        val2, _ = board[r2][c2]
+        val3, _ = board[r3][c3]
+
+        if val1 == val2 == val3:
+            print("Triple match found!")
+            board[r1][c1] = (val1, "matched")
+            board[r2][c2] = (val2, "matched")
+            board[r3][c3] = (val3, "matched")
         else:
             print("Not a match.")
     
+        board[r1][c1] = (val1, "hidden")
+        board[r2][c2] = (val2, "hidden")
+        board[r3][c3] = (val3, "hidden")    
 
         display_board(board)
 
+        if all_matched(board):
+            print("Congratulations! You found all pairs!")
+            break
     
 
 
