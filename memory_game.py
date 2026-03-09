@@ -109,6 +109,11 @@ def main():
             guesses += 1
             print("\nAttempt #", guesses)
 
+            if guesses % 5 == 0:
+                print("Reshuffling the board!")
+                board = create_board()
+                display_board(board)
+
             if r1==r2 and c1==c2:
                 print("invalid input")
             else:
