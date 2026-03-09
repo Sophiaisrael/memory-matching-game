@@ -145,7 +145,8 @@ def main():
         display_board(board)
 
         if all_matched(board):
-            print("Congratulations! You found all pairs!")
+            print("\nCongratulations! You found all matches!")
+            print("Total attempts:", guesses)
             break
     
 
