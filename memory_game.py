@@ -27,8 +27,13 @@ Core features implemented:
 
 import random
 
-def create_board():
-    values = values = [1,1,1,2,2,2,3,3,3,4,4,4,5,5,5,6]
+def create_board(match_size):
+    values = []
+    num_unique = 16 // match_size
+
+    for i in range(1, num_unique + 1):
+        values.extend([i] * match_size)
+
     random.shuffle(values)
 
     board = []
@@ -84,6 +89,7 @@ def main():
     print("Memory Matching Game")
     print("CMPS-1100 Foundations of Programming")
     print("Starter scaffold loaded successfully.")
+    match_size = int(input("How many cards to match? (2, 3, 4): "))
     board = create_board()
     display_board(board)
 
@@ -93,56 +99,43 @@ def main():
 
     while True:
         input_is_valid=False
+
         while not input_is_valid: 
-            print("\nPick first card:")
-            r1 = int(input("Row (0-3): "))
-            c1 = int(input("Col (0-3): "))
+            selected_positions = []
 
-            print("\nPick second card:")
-            r2 = int(input("Row (0-3): "))
-            c2 = int(input("Col (0-3): "))
+            for i in range(match_size):
+                print(f"\nPick card {i+1}:")
+                r = int(input("Row (0–3): "))
+                c = int(input("Col (0–3): "))
+                selected_positions.append((r, c))
 
-            print("\nPick third card:")
-            r3 = int(input("Row (0-3): "))
-            c3 = int(input("Col (0-3): "))
+            input_is_valid = True
 
-            guesses += 1
-            print("\nAttempt #", guesses)
+        guesses += 1
+        print("\nAttempt #", guesses)
 
-            if guesses % 5 == 0:
-                print("Reshuffling the board!")
-                board = create_board()
-                display_board(board)
-
-            if r1==r2 and c1==c2:
-                print("invalid input")
-            else:
-                input_is_valid=True
-
-
-        board[r1][c1] = (board[r1][c1][0], "revealed")
-        board[r2][c2] = (board[r2][c2][0], "revealed")
-        board[r3][c3] = (board[r3][c3][0], "revealed")
-
-        display_board(board)    
-             
-        val1, _ = board[r1][c1]
-        val2, _ = board[r2][c2]
-        val3, _ = board[r3][c3]
-
-        if val1 == val2 == val3:
-            print("Triple match found!")
-            board[r1][c1] = (val1, "matched")
-            board[r2][c2] = (val2, "matched")
-            board[r3][c3] = (val3, "matched")
-        else:
-            print("Not a match.")
-    
-        board[r1][c1] = (val1, "hidden")
-        board[r2][c2] = (val2, "hidden")
-        board[r3][c3] = (val3, "hidden")    
+        if guesses % 5 == 0:
+            print("Reshuffling the board!")
+            display_board(board)
+            board = create_board(match_size)\
+            
+        for r, c in selected_positions:
+            value, _ = board[r][c]
+            board[r][c] = (value, "revealed")
 
         display_board(board)
+        values = [board[r][c][0] for r, c in selected_positions]
+
+        if all(v == values[0] for v in values):
+            print("Match!")
+            for r, c in selected_positions:
+                value, _ = board[r][c]
+                board[r][c] = (value, "matched")
+        else:
+            print("Not a match.")
+            for r, c in selected_positions:
+                value, _ = board[r][c]
+                board[r][c] = (value, "hidden")
 
         if all_matched(board):
             print("\nCongratulations! You found all matches!")
