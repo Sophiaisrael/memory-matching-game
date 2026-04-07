@@ -29,10 +29,13 @@ import random
 
 def create_board(match_size):
     values = []
-    num_unique = 16 // match_size
+    while len(values) < 16:
+        for i in range(1, 100):  # big enough range
+            values.extend([i] * match_size)
+            if len(values) >= 16:
+                break
 
-    for i in range(1, num_unique + 1):
-        values.extend([i] * match_size)
+    values = values[:16]  # trim to exactly 16
 
     random.shuffle(values)
 
@@ -85,19 +88,20 @@ def all_matched(board):
                 return False
     return True
 
-def main():
-    print("Memory Matching Game")
-    print("CMPS-1100 Foundations of Programming")
-    print("Starter scaffold loaded successfully.")
-    match_size = int(input("How many cards to match? (2, 3, 4): "))
-    board = create_board()
-    display_board(board)
+def main():3
+
+print("Memory Matching Game")
+print("CMPS-1100 Foundations of Programming")
+print("Starter scaffold loaded successfully.")
+match_size = int(input("How many cards to match? (2, 3, 4): "))
+board = create_board(match_size)
+display_board(board)
 
 
 
-    guesses = 0
+guesses = 0
 
-    while True:
+while True:
         input_is_valid=False
 
         while not input_is_valid: 
@@ -105,11 +109,26 @@ def main():
 
             for i in range(match_size):
                 print(f"\nPick card {i+1}:")
-                r = int(input("Row (0–3): "))
-                c = int(input("Col (0–3): "))
-                selected_positions.append((r, c))
+    
+            while True:
+                row_input = input("Row (0–3): ")
+                if not row_input.isdigit():
+                    print("Invalid input. Try again.")
+                    continue
+                r = int(row_input)
+                col_input = input("Col (0–3): ")
+                if not col_input.isdigit():
+                    print("Invalid input. Try again.")
+                    continue
+                c = int(col_input)
+        
+                if 0 <= r <= 3 and 0 <= c <= 3:
+                    break
+                else:
+                    print("Invalid input. Try again.")
 
-            input_is_valid = True
+        selected_positions.append((r, c))
+        input_is_valid = True
 
         guesses += 1
         print("\nAttempt #", guesses)
