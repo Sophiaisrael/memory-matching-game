@@ -1,28 +1,27 @@
-# Memory Matching Game
-
-Author: Sophia Israel
-Course: CMPS-1100 Foundations of Programming
+Author: Sophia Israel  
+Course: CMPS-1100 Foundations of Programming  
 
 ## Description
-This project implements a console-based memory matching game written in Python.
-The player selects two cards at a time and tries to find matching pairs.
+This project implements a console-based memory matching game written in Python. The player selects cards on a 4x4 board and tries to find matching values.
+
+The game supports:
+- 2-card matching
+- 4-card matching
 
 ## Files
-memory_game.py - Main game program
+memory_game.py - Main game program  
+test_for_matching.py - Unit tests for core functions  
 
-Test_for_matching.py - Unit tests that verify the core game functions
-
-## How to run the game
+## How to Run the Game
 python3 memory_game.py
 
-## How to run the tests
-python3 Test_for_matching.py
+## How to Run the Tests
+python3 test_for_matching.py
 
 ## Features
 - Randomized memory board
-- Triple-card matching system
-- Guess counter that tracks the number of attempts
+- Supports 2-card and 4-card matching modes
+- Input validation (prevents invalid or duplicate selections)
+- Guess counter to track attempts
 - Automatic win detection when all cards are matched
-- Unit tests verifying core game functions
-
-
+- Unit tests verifying core game functionality
