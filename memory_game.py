@@ -101,65 +101,54 @@ display_board(board)
 
 guesses = 0
 
-while True:
-        input_is_valid=False
+while True: 
+    selected_positions = []
 
-        while not input_is_valid: 
-            selected_positions = []
+    for i in range(match_size):
+        print(f"\nPick card {i+1}:")
 
-            for i in range(match_size):
-                print(f"\nPick card {i+1}:")
-    
-            while True:
-                row_input = input("Row (0–3): ")
-                if not row_input.isdigit():
-                    print("Invalid input. Try again.")
-                    continue
-                r = int(row_input)
-                col_input = input("Col (0–3): ")
-                if not col_input.isdigit():
-                    print("Invalid input. Try again.")
-                    continue
-                c = int(col_input)
-        
-                if 0 <= r <= 3 and 0 <= c <= 3:
-                    break
-                else:
-                    print("Invalid input. Try again.")
+        while True:
+            row_input = input("Row (0-3): ")
+            if not row_input.isdigit():
+                print("Invalid input. Try again.")
+                continue
+            r = int(row_input)
+
+            col_input = input("Col (0-3): ")
+            if not col_input.isdigit():
+                print("Invalid input. Try again.")
+                continue
+            c = int(col_input)
+
+            if 0 <= r <= 3 and 0 <= c <= 3:
+                break
+            else:
+                print("Invalid input. Try again.")
 
         selected_positions.append((r, c))
-        input_is_valid = True
+        value, _ = board[r][c]
+        board[r][c] = (value, "revealed")
+        display_board(board)
 
-        guesses += 1
-        print("\nAttempt #", guesses)
+    guesses  += 1
+    print("\nAttempt #", guesses)
+    values = [board[r][c][0] for r, c in selected_positions]
 
-        if guesses % 5 == 0:
-            print("Reshuffling the board!")
-            display_board(board)
-            board = create_board(match_size)\
-            
+    if all(v == values[0] for v in values):
+        print("Match!")
         for r, c in selected_positions:
             value, _ = board[r][c]
-            board[r][c] = (value, "revealed")
+            board[r][c] = (value, "matched")
+    else:
+        print("Not a match.")
+        for r, c in selected_positions:
+            value, _ = board[r][c]
+            board[r][c] = (value, "hidden")
 
-        display_board(board)
-        values = [board[r][c][0] for r, c in selected_positions]
-
-        if all(v == values[0] for v in values):
-            print("Match!")
-            for r, c in selected_positions:
-                value, _ = board[r][c]
-                board[r][c] = (value, "matched")
-        else:
-            print("Not a match.")
-            for r, c in selected_positions:
-                value, _ = board[r][c]
-                board[r][c] = (value, "hidden")
-
-        if all_matched(board):
-            print("\nCongratulations! You found all matches!")
-            print("Total attempts:", guesses)
-            break
+    if all_matched(board):
+        print("\nCongratulations! You found all matches!")
+        print("Total attempts:", guesses)
+        break
     
 
 
